@@ -9,7 +9,7 @@ rouge = evaluate.load("rouge")
 
 def compute_rouge(preds: List[str], labels: List[str]) -> Dict[str, float]:
     scores = rouge.compute(predictions=preds, references=labels, use_stemmer=True)
-    # return standard keys
+   
     return {
         "rouge1": scores.get("rouge1", 0.0) * 100,
         "rouge2": scores.get("rouge2", 0.0) * 100,
