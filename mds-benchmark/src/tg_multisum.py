@@ -1,9 +1,4 @@
 
-"""
-Graph-based MDS (TG-MultiSum-style) baseline:
-- Build a TF-IDF cosine graph across sentences, aggregate by topics (spectral clustering).
-- Generate per-topic mini-summaries with T5, then fuse.
-"""
 from typing import List
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -37,7 +32,7 @@ class TGMDS:
             enc = self.tok(prompt, return_tensors="pt", truncation=True, max_length=768)
             out = self.model.generate(**enc, max_length=max_len)
             minis.append(self.tok.decode(out[0], skip_special_tokens=True))
-        # fuse
+
         prompt = "summarize: " + " ".join(minis)
         enc = self.tok(prompt, return_tensors="pt", truncation=True, max_length=768)
         out = self.model.generate(**enc, max_length=128)
