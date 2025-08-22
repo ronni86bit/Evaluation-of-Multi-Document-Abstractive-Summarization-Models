@@ -8,7 +8,7 @@ SPECIAL_SEP = "\n\n[DOC]\n\n"
 
 def load_cnn_dm(split="train", version="3.0.0"):
     ds = load_dataset("cnn_dailymail", version, split=split)
-    # canonicalize fields
+
     def _map(ex):
         return {"id": ex.get("id", ""), "document": ex["article"], "summary": ex["highlights"]}
     return ds.map(_map, remove_columns=ds.column_names)
@@ -17,12 +17,12 @@ def make_mds_example_from_group(examples: List[Dict], max_docs: int = 3) -> Dict
     k = min(len(examples), max_docs)
     picked = random.sample(examples, k)
     multi = SPECIAL_SEP.join([p["document"] for p in picked])
-    # simple heuristic: use the longest summary (proxy for richness)
+ 
     ref = max([p["summary"] for p in picked], key=len)
     return {"document": multi, "summary": ref}
 
 def chunk_text(text: str, n_chunks: int = 3) -> List[str]:
-    # naive split by sentences/paragraphs
+
     parts = [p for p in text.split("\n") if p.strip()]
     if n_chunks >= len(parts):
         return parts
