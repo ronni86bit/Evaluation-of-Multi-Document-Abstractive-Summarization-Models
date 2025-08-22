@@ -1,9 +1,4 @@
-
-"""
-Deep Communicating Agents (DCA) inspired baseline:
-- Split into K agents, each creates a partial summary.
-- Agents "communicate" by sharing their partial and refining once.
-- Coordinator fuses into final.
+nator fuses into final.
 """
 from typing import List
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
@@ -22,13 +17,13 @@ class DCAgentSummarizer:
 
     def summarize(self, documents: List[str], agents=3):
         text = " ".join(documents)
-        # split by length into K parts
+ 
         L = len(text)
         parts = [text[i*L//agents:(i+1)*L//agents] for i in range(agents)]
         partials = [self._gen(self.atok, self.amodel, p) for p in parts]
-        # communicate: each agent refines with others' partials context
+
         context = " ".join(partials)
         refined = [self._gen(self.atok, self.amodel, p + " " + context) for p in parts]
-        # coordinator fuses
+
         final = self._gen(self.ctok, self.cmodel, " ".join(refined), max_len=160)
         return final
