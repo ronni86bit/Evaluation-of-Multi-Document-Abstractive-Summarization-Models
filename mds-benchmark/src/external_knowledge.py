@@ -1,9 +1,4 @@
 
-"""
-External Knowledge (topic/keyword-guided):
-- Extract top keywords via TF-IDF; prepend "Keywords: ..." to the prompt.
-- Works with any generator (default t5-base).
-"""
 from typing import List
 from sklearn.feature_extraction.text import TfidfVectorizer
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
