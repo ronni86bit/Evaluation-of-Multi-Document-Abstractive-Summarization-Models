@@ -20,30 +20,7 @@ This repo provides **runnable training & evaluation code** for a suite of abstra
 ## Quickstart
 
 ```bash
-python -m pip install -r requirements.txt
 
-# Hugging Face login (optional, for private models or pushing)
-# huggingface-cli login
-
-# Example: fine-tune BART on CNN/DailyMail
-python src/train_seq2seq.py --config configs/bart_large.json
-
-# Evaluate a saved checkpoint
-python src/eval_seq2seq.py --checkpoint_path runs/bart-large/checkpoint-best --config configs/bart_large.json
-```
-
-### Multi-document flags (synthetic)
-
-- `--mds_group_size N` : pack N *different* articles into one example (concatenated with special separators).
-- `--mds_from_chunks`  : split a single long article into N chunks and treat as documents.
-
-These produce inputs like: `[DOC1] ... [DOC2] ... [DOC3] ...`
-
-## Results
-
-Use `src/eval_seq2seq.py` to compute **ROUGE-1/2/L**. The script also saves a CSV and prints a comparison table. 
-
-## Repo layout
 
 ```
 src/
@@ -71,6 +48,3 @@ scripts/
 - Mixed precision (`fp16`/`bf16`) and `gradient_accumulation_steps` help fit bigger batches.
 - For PRIMERA, set `global_attention` on document boundaries (implemented in `data.py`).
 
----
-
-**Academic integrity**: The advanced baselines here are faithful *simplifications* of the research ideas so you can run them end-to-end on CNN/DailyMail. For official SOTA numbers, refer to the original papers.
