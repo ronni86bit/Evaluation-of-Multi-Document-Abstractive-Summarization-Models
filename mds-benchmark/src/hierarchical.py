@@ -1,9 +1,4 @@
 
-"""
-Hierarchical Transformer baseline:
-- Split collection into chunks -> summarize chunks (level-1) -> summarize summaries (level-2).
-- Uses any HF seq2seq checkpoint (default t5-base).
-"""
 from typing import List
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
@@ -18,13 +13,13 @@ class HierarchicalSummarizer:
         return self.tok.decode(out[0], skip_special_tokens=True)
 
     def summarize(self, documents: List[str], chunk_size=800):
-        # chunk each document
+
         chunks = []
         for d in documents:
             for i in range(0, len(d), chunk_size):
                 chunks.append(d[i:i+chunk_size])
-        # level-1
+     
         l1 = [self._summ(c) for c in chunks]
-        # level-2 fusion
+    
         fused = self._summ(" ".join(l1), max_len=160)
         return fused
