@@ -1,15 +1,8 @@
 
-"""
-Absformer (unsupervised MDS baseline):
-- Build a sentence graph with TextRank (via NetworkX over TF-IDF cosine).
-- Select top-K sentences across the collection (multi-doc).
-- Compress with a small abstractive model (e.g., t5-base) to produce a fluent final summary.
-"""
 from typing import List
 import numpy as np, networkx as nx
 from sklearn.feature_extraction.text import TfidfVectorizer
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-
 def textrank_select(sentences: List[str], top_k: int = 10) -> List[str]:
     vect = TfidfVectorizer().fit_transform(sentences)
     sim = (vect * vect.T).A
@@ -18,14 +11,12 @@ def textrank_select(sentences: List[str], top_k: int = 10) -> List[str]:
     scores = nx.pagerank_numpy(g)
     ranked = sorted(range(len(sentences)), key=lambda i: scores.get(i,0.0), reverse=True)
     return [sentences[i] for i in ranked[:top_k]]
-
 class Absformer:
     def __init__(self, compressor_name="t5-base", device=None):
         self.tok = AutoTokenizer.from_pretrained(compressor_name, use_fast=True)
         self.model = AutoModelForSeq2SeqLM.from_pretrained(compressor_name)
 
     def summarize(self, documents: List[str], max_len=160) -> str:
-        # naive sentence split
         sents = []
         for d in documents:
             sents.extend([s.strip() for s in d.split(". ") if s.strip()])
